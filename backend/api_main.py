@@ -7,8 +7,19 @@
 # - Type hints (-> dict) are optional but recommended; they improve editor support and readability. Pros use them widely.
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# DEV ONLY: allow all origins while developing.
+# Later, restrict to your app's domains.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/health")
 def health() -> dict:
