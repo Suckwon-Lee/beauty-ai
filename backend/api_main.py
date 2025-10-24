@@ -1,26 +1,26 @@
-# --- api_main.py ---
-# Python fundamentals (and why pros use them:
-# - import: brings library names into this module's namespace (standard practice).
-# - app = FastAPI(): instantiates the web app (object-oriented design).
-# - @app.get("/path"): a *decorator* that registers a function as a route.
-# - def health(): defines a function. Returning a Python dict -> FastAPI serializes it to JSON (Starlette/JSONResponse).
-# - Type hints (-> dict) are optional but recommended; they improve editor support and readability. Pros use them widely.
-
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
-# DEV ONLY: allow all origins while developing.
-# Later, restrict to your app's domains.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # dev
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"], allow_credentials=True,
+    allow_methods=["*"], allow_headers=["*"],
 )
 
 @app.get("/health")
 def health() -> dict:
     return {"ok": True}
+
+@app.post("/upload")
+async def upload(file: UploadFile = File(...)):
+    # Save the file temporarily
+    os.makedirs("uploads", exist_ok=True)
+    path = f"uploads/{file.filename}"
+    with open(path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    size_kb = round(len(content) / 1024, 2)
+    return {"received": file.filename, "size_kb": size_kb}
