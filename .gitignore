@@ -1,5 +1,16 @@
-﻿**/.venv/
-**/__pycache__/
-**/.ipynb_checkpoints/
+# Node (Expo)
 node_modules/
-.env
+.expo/
+.expo-shared/
+
+# Python venv & cache
+backend/.venv/
+__pycache__/
+
+# Uploads
+backend/uploads/
+
+# System / editor files
+.DS_Store
+Thumbs.db
+.vscode/
